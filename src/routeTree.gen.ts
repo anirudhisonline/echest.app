@@ -12,7 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AnotherPageRouteImport } from './routes/anotherPage'
 import { Route as AcceptInviteRouteImport } from './routes/accept-invite'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ChestChestIdRouteImport } from './routes/chest.$chestId'
+import { Route as ChestIndexRouteImport } from './routes/chest/index'
+import { Route as ChestChestIdIndexRouteImport } from './routes/chest/$chestId/index'
 
 const AnotherPageRoute = AnotherPageRouteImport.update({
   id: '/anotherPage',
@@ -29,9 +30,14 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ChestChestIdRoute = ChestChestIdRouteImport.update({
-  id: '/chest/$chestId',
-  path: '/chest/$chestId',
+const ChestIndexRoute = ChestIndexRouteImport.update({
+  id: '/chest/',
+  path: '/chest/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChestChestIdIndexRoute = ChestChestIdIndexRouteImport.update({
+  id: '/chest/$chestId/',
+  path: '/chest/$chestId/',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -39,34 +45,49 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/accept-invite': typeof AcceptInviteRoute
   '/anotherPage': typeof AnotherPageRoute
-  '/chest/$chestId': typeof ChestChestIdRoute
+  '/chest': typeof ChestIndexRoute
+  '/chest/$chestId': typeof ChestChestIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/accept-invite': typeof AcceptInviteRoute
   '/anotherPage': typeof AnotherPageRoute
-  '/chest/$chestId': typeof ChestChestIdRoute
+  '/chest': typeof ChestIndexRoute
+  '/chest/$chestId': typeof ChestChestIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/accept-invite': typeof AcceptInviteRoute
   '/anotherPage': typeof AnotherPageRoute
-  '/chest/$chestId': typeof ChestChestIdRoute
+  '/chest/': typeof ChestIndexRoute
+  '/chest/$chestId/': typeof ChestChestIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/accept-invite' | '/anotherPage' | '/chest/$chestId'
+  fullPaths:
+    | '/'
+    | '/accept-invite'
+    | '/anotherPage'
+    | '/chest'
+    | '/chest/$chestId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/accept-invite' | '/anotherPage' | '/chest/$chestId'
-  id: '__root__' | '/' | '/accept-invite' | '/anotherPage' | '/chest/$chestId'
+  to: '/' | '/accept-invite' | '/anotherPage' | '/chest' | '/chest/$chestId'
+  id:
+    | '__root__'
+    | '/'
+    | '/accept-invite'
+    | '/anotherPage'
+    | '/chest/'
+    | '/chest/$chestId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AcceptInviteRoute: typeof AcceptInviteRoute
   AnotherPageRoute: typeof AnotherPageRoute
-  ChestChestIdRoute: typeof ChestChestIdRoute
+  ChestIndexRoute: typeof ChestIndexRoute
+  ChestChestIdIndexRoute: typeof ChestChestIdIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -92,11 +113,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/chest/$chestId': {
-      id: '/chest/$chestId'
+    '/chest/': {
+      id: '/chest/'
+      path: '/chest'
+      fullPath: '/chest'
+      preLoaderRoute: typeof ChestIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chest/$chestId/': {
+      id: '/chest/$chestId/'
       path: '/chest/$chestId'
       fullPath: '/chest/$chestId'
-      preLoaderRoute: typeof ChestChestIdRouteImport
+      preLoaderRoute: typeof ChestChestIdIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -106,7 +134,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AcceptInviteRoute: AcceptInviteRoute,
   AnotherPageRoute: AnotherPageRoute,
-  ChestChestIdRoute: ChestChestIdRoute,
+  ChestIndexRoute: ChestIndexRoute,
+  ChestChestIdIndexRoute: ChestChestIdIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
