@@ -8,7 +8,6 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
@@ -71,7 +70,9 @@ export function CollaboratorDialog({
       setCopiedToken(true)
       setTimeout(() => setCopiedToken(false), 2000)
 
-      toast.success('Invite link copied to clipboard!')
+      toast.success(`Invite link copied to clipboard! for ${inviteEmail}`, {
+        description: '',
+      })
       setInviteEmail('')
       setShowInviteForm(false)
     } catch (error: any) {

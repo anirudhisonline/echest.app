@@ -15,6 +15,20 @@ import { EditChestDialog } from '@/components/EditChestDialog'
 
 export const Route = createFileRoute('/chest/$chestId/')({
   component: ChestPage,
+  errorComponent: ({ error }) => (
+    <div className="container mx-auto py-8 px-4">
+      <div className="text-center max-w-md mx-auto">
+        <h1 className="text-2xl font-bold mb-2">Chest not found</h1>
+        <p className="text-muted-foreground mb-6">
+          This chest doesn't exist or you don't have access to it.
+        </p>
+        <Button onClick={() => (window.location.href = '/')}>
+          <ArrowLeft className="mr-2 h-4 w-4" />
+          Back to Chests
+        </Button>
+      </div>
+    </div>
+  ),
 })
 
 function ChestPage() {
@@ -27,24 +41,11 @@ function ChestPage() {
   const [showCollaborators, setShowCollaborators] = useState(false)
   const [showEditChest, setShowEditChest] = useState(false)
 
+  // Loading state
   if (chest === undefined) {
     return (
-      <div className="flex justify-center items-center min-h-[400px]">
+      <div className="flex justify-center items-center min-h-screen">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    )
-  }
-
-  if (chest === null) {
-    return (
-      <div className="container mx-auto py-8 px-4">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Chest not found</h1>
-          <Button onClick={() => navigate({ to: '/' })}>
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Chests
-          </Button>
-        </div>
       </div>
     )
   }

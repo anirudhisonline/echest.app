@@ -11,7 +11,7 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { toast } from 'sonner'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 export const Route = createFileRoute('/accept-invite')({
   component: AcceptInvite,
@@ -38,7 +38,7 @@ function AcceptInvite() {
     setIsAccepting(true)
     try {
       const chestId = await acceptInvite({ token })
-      toast.success('Invite accepted! Redirecting to chest...')
+      toast.success('Successfully joined the chest!')
       setTimeout(() => {
         navigate({ to: `/chest/$chestId`, params: { chestId } })
       }, 1000)
@@ -48,6 +48,16 @@ function AcceptInvite() {
     }
   }
 
+  // Loading state - waiting for auth
+  if (loggedInUser === undefined) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
+
+  // Not signed in
   if (!loggedInUser) {
     return (
       <div className="container mx-auto py-8 px-4 max-w-md">
@@ -69,6 +79,7 @@ function AcceptInvite() {
     )
   }
 
+  // Signed in - show accept button
   return (
     <Authenticated>
       <div className="container mx-auto py-8 px-4 max-w-md">
