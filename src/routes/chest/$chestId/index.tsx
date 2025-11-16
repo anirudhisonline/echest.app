@@ -54,82 +54,153 @@ function ChestPage() {
   return (
     <Authenticated>
       <div className="min-h-screen flex flex-col">
-        {/* Sticky Top Bar - Everything in one line */}
+        {/* Sticky Top Bar - Responsive Layout */}
         <div className="border-b bg-background sticky top-0 z-40 shadow-sm">
-          <div className="px-6 py-3 flex items-center justify-between gap-6">
-            {/* Left Side: Logo + Chest Info */}
-            <div className="flex items-center gap-4 flex-1 min-w-0">
-              {/* Logo */}
-              <Link
-                to="/"
-                className="flex items-center gap-2 font-medium hover:opacity-80 transition-opacity shrink-0"
-              >
-                <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-sm">
-                  <img src="../logo.png" alt="echest" />
-                </div>
-                <p className="font-bold">echest</p>
-              </Link>
+          <div className="px-6 py-3">
+            {/* Desktop: Everything in one line */}
+            <div className="hidden md:flex items-center justify-between gap-6">
+              {/* Left Side: Logo + Chest Info */}
+              <div className="flex items-center gap-4 flex-1 min-w-0">
+                {/* Logo */}
+                <Link
+                  to="/"
+                  className="flex items-center gap-2 font-medium hover:opacity-80 transition-opacity shrink-0"
+                >
+                  <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-sm">
+                    <img src="../logo.png" alt="echest" />
+                  </div>
+                  <p className="font-bold">echest</p>
+                </Link>
 
-              {/* Divider */}
-              <div className="h-6 w-px bg-border shrink-0" />
+                {/* Divider */}
+                <div className="h-6 w-px bg-border shrink-0" />
 
-              {/* Chest Name & Description */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-lg font-semibold truncate">
-                    {chest.name}
-                  </h1>
-                  {canEdit && (
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="h-6 w-6 shrink-0"
-                      onClick={() => setShowEditChest(true)}
-                      title="Edit chest"
-                    >
-                      <Edit className="h-3 w-3" />
-                    </Button>
+                {/* Chest Name & Description */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-lg font-semibold truncate">
+                      {chest.name}
+                    </h1>
+                    {canEdit && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 shrink-0"
+                        onClick={() => setShowEditChest(true)}
+                        title="Edit chest"
+                      >
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                    )}
+                  </div>
+                  {chest.description && (
+                    <p className="text-xs text-muted-foreground truncate">
+                      {chest.description}
+                    </p>
                   )}
                 </div>
-                {chest.description && (
-                  <p className="text-xs text-muted-foreground truncate">
-                    {chest.description}
-                  </p>
-                )}
+              </div>
+
+              {/* Right Side: Role + Collaborators + Sign Out + Theme */}
+              <div className="flex items-center gap-3 shrink-0">
+                {/* Role Badge */}
+                <Badge
+                  variant={
+                    chest.userRole === 'owner'
+                      ? 'default'
+                      : chest.userRole === 'admin'
+                        ? 'secondary'
+                        : 'outline'
+                  }
+                >
+                  {chest.userRole}
+                </Badge>
+
+                {/* Collaborators Button */}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowCollaborators(true)}
+                >
+                  <Users className="h-4 w-4 mr-2" />
+                </Button>
+
+                {/* Divider */}
+                <div className="h-6 w-px bg-border" />
+
+                {/* Sign Out & Theme */}
+                <SignOutButton />
+                <AnimatedThemeToggler />
               </div>
             </div>
 
-            {/* Right Side: Role + Collaborators + Sign Out + Theme */}
-            <div className="flex items-center gap-3 shrink-0">
-              {/* Role Badge */}
-              <Badge
-                variant={
-                  chest.userRole === 'owner'
-                    ? 'default'
-                    : chest.userRole === 'admin'
-                      ? 'secondary'
-                      : 'outline'
-                }
-              >
-                {chest.userRole}
-              </Badge>
+            {/* Mobile: Two lines */}
+            <div className="md:hidden space-y-3">
+              {/* Line 1: Logo + echest + Sign Out + Theme */}
+              <div className="flex items-center justify-between">
+                <Link
+                  to="/"
+                  className="flex items-center gap-2 font-medium hover:opacity-80 transition-opacity"
+                >
+                  <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-sm">
+                    <img src="../logo.png" alt="echest" />
+                  </div>
+                  <p className="font-bold">echest</p>
+                </Link>
 
-              {/* Collaborators Button */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowCollaborators(true)}
-              >
-                <Users className="h-4 w-4 mr-2" />
-                Collaborators
-              </Button>
+                <div className="flex items-center gap-2">
+                  <SignOutButton />
+                  <AnimatedThemeToggler />
+                </div>
+              </div>
 
-              {/* Divider */}
-              <div className="h-6 w-px bg-border" />
+              {/* Line 2: Chest Name + Collaborators Icon */}
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-lg font-semibold truncate">
+                      {chest.name}
+                    </h1>
+                    {canEdit && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 shrink-0"
+                        onClick={() => setShowEditChest(true)}
+                        title="Edit chest"
+                      >
+                        <Edit className="h-3 w-3" />
+                      </Button>
+                    )}
+                  </div>
+                  {chest.description && (
+                    <p className="text-xs text-muted-foreground truncate">
+                      {chest.description}
+                    </p>
+                  )}
+                </div>
 
-              {/* Sign Out & Theme */}
-              <SignOutButton />
-              <AnimatedThemeToggler />
+                <div className="flex items-center gap-2 shrink-0">
+                  <Badge
+                    variant={
+                      chest.userRole === 'owner'
+                        ? 'default'
+                        : chest.userRole === 'admin'
+                          ? 'secondary'
+                          : 'outline'
+                    }
+                  >
+                    {chest.userRole}
+                  </Badge>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => setShowCollaborators(true)}
+                  >
+                    <Users className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
