@@ -1,22 +1,23 @@
-import { convexAuth, getAuthUserId } from "@convex-dev/auth/server";
-import { Password } from "@convex-dev/auth/providers/Password";
-import { Anonymous } from "@convex-dev/auth/providers/Anonymous";
-import { query } from "./_generated/server";
+import { convexAuth, getAuthUserId } from '@convex-dev/auth/server'
+import GitHub from '@auth/core/providers/github'
+import { Password } from '@convex-dev/auth/providers/Password'
+import { Anonymous } from '@convex-dev/auth/providers/Anonymous'
+import { query } from './_generated/server'
 
 export const { auth, signIn, signOut, store, isAuthenticated } = convexAuth({
-  providers: [Password, Anonymous],
-});
+  providers: [Password, Anonymous, GitHub],
+})
 
 export const loggedInUser = query({
   handler: async (ctx) => {
-    const userId = await getAuthUserId(ctx);
+    const userId = await getAuthUserId(ctx)
     if (!userId) {
-      return null;
+      return null
     }
-    const user = await ctx.db.get(userId);
+    const user = await ctx.db.get(userId)
     if (!user) {
-      return null;
+      return null
     }
-    return user;
+    return user
   },
-});
+})

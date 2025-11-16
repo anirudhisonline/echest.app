@@ -1,6 +1,7 @@
 // src/components/ChestList.tsx
 import { useState } from 'react'
 import { useMutation, useQuery } from 'convex/react'
+import { Link } from '@tanstack/react-router'
 import { api } from '@@/convex/_generated/api'
 import type { Id } from '@@/convex/_generated/dataModel'
 import { toast } from 'sonner'
@@ -38,11 +39,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Badge } from '@/components/ui/badge'
 import { Trash2, Plus } from 'lucide-react'
 
-interface ChestListProps {
-  onSelectChest: (id: Id<'chests'>) => void
-}
-
-export function ChestList({ onSelectChest }: ChestListProps) {
+export function ChestList() {
   const chests = useQuery(api.chests.listMyChests)
   const createChest = useMutation(api.chests.createChest)
   const deleteChest = useMutation(api.chests.deleteChest)
@@ -60,7 +57,7 @@ export function ChestList({ onSelectChest }: ChestListProps) {
 
     setIsCreating(true)
     try {
-      const chestId = await createChest({
+      await createChest({
         name: newChestName.trim(),
         description: newChestDescription.trim() || undefined,
       })
@@ -69,7 +66,6 @@ export function ChestList({ onSelectChest }: ChestListProps) {
       setNewChestDescription('')
       setShowCreateDialog(false)
       toast.success('Chest created successfully!')
-      onSelectChest(chestId)
     } catch (error) {
       toast.error('Failed to create chest')
     } finally {
@@ -182,52 +178,55 @@ export function ChestList({ onSelectChest }: ChestListProps) {
           {allChests.map(
             (chest) =>
               chest && (
-                <Card
+                <Link
                   key={chest._id}
-                  className="cursor-pointer hover:border-primary transition-colors"
-                  onClick={() => onSelectChest(chest._id)}
+                  to="/chest/$chestId"
+                  params={{ chestId: chest._id }}
                 >
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="truncate pr-2">
-                        {chest.name}
-                      </CardTitle>
-                      <Badge
-                        variant={
-                          chest.role === 'owner'
-                            ? 'default'
-                            : chest.role === 'admin'
-                              ? 'secondary'
-                              : 'outline'
-                        }
-                      >
-                        {chest.role}
-                      </Badge>
-                    </div>
-                    {chest.description && (
-                      <CardDescription className="line-clamp-2 pt-1">
-                        {chest.description}
-                      </CardDescription>
-                    )}
-                  </CardHeader>
-                  <CardFooter className="flex justify-end">
-                    {chest.role === 'owner' && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="text-destructive hover:text-destructive"
-                        title="Delete chest"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setDeleteChestId(chest._id)
-                          setDeleteChestName(chest.name)
-                        }}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </CardFooter>
-                </Card>
+                  <Card className="cursor-pointer hover:border-primary transition-colors h-full">
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <CardTitle className="truncate pr-2">
+                          {chest.name}
+                        </CardTitle>
+                        <Badge
+                          variant={
+                            chest.role === 'owner'
+                              ? 'default'
+                              : chest.role === 'admin'
+                                ? 'secondary'
+                                : 'outline'
+                          }
+                        >
+                          {chest.role}
+                        </Badge>
+                      </div>
+                      {chest.description && (
+                        <CardDescription className="line-clamp-2 pt-1">
+                          {chest.description}
+                        </CardDescription>
+                      )}
+                    </CardHeader>
+                    <CardFooter className="flex justify-end">
+                      {chest.role === 'owner' && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="text-destructive hover:text-destructive"
+                          title="Delete chest"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            setDeleteChestId(chest._id)
+                            setDeleteChestName(chest.name)
+                          }}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </CardFooter>
+                  </Card>
+                </Link>
               ),
           )}
         </div>

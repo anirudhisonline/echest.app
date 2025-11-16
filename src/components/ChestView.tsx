@@ -1,4 +1,4 @@
-// src/components/ChestView.tsx - Redesigned with chat-like interface
+// src/components/ChestView.tsx - Simplified, no header
 import { useQuery } from 'convex/react'
 import { api } from '@@/convex/_generated/api'
 import type { Id } from '@@/convex/_generated/dataModel'
@@ -7,12 +7,10 @@ import { TodoList } from './TodoList'
 import { ContentGrid } from './ContentGrid'
 import { ChatInput } from './ChatInput'
 import { FilterBar } from './FilterBar'
+import { QuickAddTodo } from './QuickAddTodo'
 import { CollaboratorDialog } from './CollaboratorDialog'
 import { EditChestDialog } from './EditChestDialog'
 import { ItemDialog } from './ItemDialog'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Users, Edit } from 'lucide-react'
 
 interface ChestViewProps {
   chestId: Id<'chests'>
@@ -59,59 +57,9 @@ export function ChestView({ chestId }: ChestViewProps) {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100vh-120px)]">
-      {/* Header */}
-      <div className="border-b bg-card">
-        <div className="p-4">
-          <div className="flex justify-between items-start">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-1">
-                <h1 className="text-2xl font-bold">{chest.name}</h1>
-                <Badge
-                  variant={
-                    chest.userRole === 'owner'
-                      ? 'default'
-                      : chest.userRole === 'admin'
-                        ? 'secondary'
-                        : 'outline'
-                  }
-                >
-                  {chest.userRole}
-                </Badge>
-              </div>
-              {chest.description && (
-                <p className="text-sm text-muted-foreground">
-                  {chest.description}
-                </p>
-              )}
-            </div>
-
-            <div className="flex gap-2">
-              {canEdit && (
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setShowEditChest(true)}
-                  title="Edit chest"
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-              )}
-              <Button
-                variant="outline"
-                size="icon"
-                onClick={() => setShowCollaborators(true)}
-                title="Manage collaborators"
-              >
-                <Users className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content Area - Scrollable */}
-      <div className="flex-1 overflow-y-auto">
+    <>
+      {/* Main Scrollable Content - Full Height */}
+      <div className="flex-1 overflow-y-auto pb-32">
         <div className="max-w-7xl mx-auto p-6 space-y-6">
           {/* Filter Bar */}
           <FilterBar
@@ -125,6 +73,9 @@ export function ChestView({ chestId }: ChestViewProps) {
             viewMode={viewMode}
             setViewMode={setViewMode}
           />
+
+          {/* Quick Add Todo */}
+          {canAddItems && <QuickAddTodo chestId={chestId} />}
 
           {/* Todos Section */}
           {todos.length > 0 && (
@@ -151,9 +102,9 @@ export function ChestView({ chestId }: ChestViewProps) {
         </div>
       </div>
 
-      {/* Chat Input - Fixed at Bottom */}
+      {/* Chat Input - Fixed at Bottom (Floating) */}
       {canAddItems && (
-        <div className="border-t bg-card shadow-lg">
+        <div className="fixed bottom-0 left-0 right-0 border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 shadow-lg z-30">
           <div className="max-w-5xl mx-auto p-4">
             <ChatInput chestId={chestId} />
           </div>
@@ -182,6 +133,6 @@ export function ChestView({ chestId }: ChestViewProps) {
         open={showEditItem}
         onOpenChange={handleCloseEditItem}
       />
-    </div>
+    </>
   )
 }
